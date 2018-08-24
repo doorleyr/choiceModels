@@ -71,7 +71,8 @@ topEdge_lonLat={'lat':42.367255,   'lon':  -71.083231}# Kendall Volpe area
 # load the precalibrated models and data
 geoIdAttributes=pickle.load( open( "./results/geoidAttributes.p", "rb" ) )
 geoIdGeo_subset=pickle.load( open( "./results/tractsMassSubset.p", "rb" ) )
-simPop_mnl=pickle.load( open('./results/simPop_mnl.p', 'rb'))
+#simPop_mnl=pickle.load( open('./results/simPop_mnl.p', 'rb'))
+simPop_mnl=pd.read_pickle('./results/simPop_mnl.p')
 longSimPop=pickle.load( open('./results/longSimPop.p', 'rb'))
 
 #add centroids

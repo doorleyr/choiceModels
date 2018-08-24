@@ -84,17 +84,17 @@ for fromGeoId in geoIdList:
             #get driving directions
             startLat, startLon, endLat, endLon=[geoidCentroids[fromGeoId]['lat'], geoidCentroids[fromGeoId]['lon'],
                                                 geoidCentroids[toGeoId]['lat'], geoidCentroids[toGeoId]['lon']]
-#            driveData=getOSRMDirections('driving', startLat, startLon, endLat, endLon)
-#            travelCosts[fromGeoId][toGeoId]['drive']['distance']=driveData[0]['distance']
-#            travelCosts[fromGeoId][toGeoId]['drive']['time']=driveData[0]['duration']
-#            # TODO find a better service for walking and cycling directions
-#            # get walking directions
-#            travelCosts[fromGeoId][toGeoId]['walk']['distance']=driveData[0]['distance']
-#            travelCosts[fromGeoId][toGeoId]['walk']['time']=driveData[0]['distance']/walkSpeed_mps
-#            # get cycling directions
-#            travelCosts[fromGeoId][toGeoId]['cycle']['distance']=driveData[0]['distance']
-#            travelCosts[fromGeoId][toGeoId]['cycle']['time']=driveData[0]['distance']/cycleSpeed_mps
-            # get transit directions
+            driveData=getOSRMDirections('driving', startLat, startLon, endLat, endLon)
+            travelCosts[fromGeoId][toGeoId]['drive']['distance']=driveData[0]['distance']
+            travelCosts[fromGeoId][toGeoId]['drive']['time']=driveData[0]['duration']
+            # TODO find a better service for walking and cycling directions
+            # get walking directions
+            travelCosts[fromGeoId][toGeoId]['walk']['distance']=driveData[0]['distance']
+            travelCosts[fromGeoId][toGeoId]['walk']['time']=driveData[0]['distance']/walkSpeed_mps
+            # get cycling directions
+            travelCosts[fromGeoId][toGeoId]['cycle']['distance']=driveData[0]['distance']
+            travelCosts[fromGeoId][toGeoId]['cycle']['time']=driveData[0]['distance']/cycleSpeed_mps
+             get transit directions
             transitData=getOTPDirections(startLat, startLon, endLat, endLon, maxWalk, toGeoId)
             for te in ['walkTime', 'waitingTime', 'transitTime', 'transfers']:
                 if transitData:
