@@ -230,7 +230,17 @@ def create_app():
 
 app = create_app()
 
-@app.route('/choiceModels/v1.0/od', methods=['GET'])
+@app.route('/choiceModels/volpe', methods=['GET'])
+def return_versions():
+    return jsonify({'Version 1.0': '/choiceModels/volpe/v1.0'})
+
+@app.route('/choiceModels/volpe/v1.0', methods=['GET'])
+def return_endPoints():
+    return jsonify({'get O-D matrix': '/choiceModels/volpe/v1.0/od',
+                    'get agents': '/choiceModels/volpe/v1.0/agents',
+                    'get geojson of regions': '/choiceModels/volpe/v1.0/geo'})
+
+@app.route('/choiceModels/volpe/v1.0/od', methods=['GET'])
 def get_od():
     # return a cross-tabulation of trips oriented by origin
     ct = longSimPop.groupby(['o', 'd', 'mode_id'], as_index=False).P.sum()
@@ -239,7 +249,7 @@ def get_od():
     ct=ct.rename(columns={"mode_id": "m"})
     return '['+",".join([ct.loc[ct['o']==o].to_json(orient='records') for o in range(len(geoIdOrderGeojson))])+']'
 
-@app.route('/choiceModels/v1.0/agents', methods=['GET'])    
+@app.route('/choiceModels/volpe/v1.0/agents', methods=['GET'])    
 def get_agents():
     random.seed(0)
     # return a cross-tabulation oriented by agents
@@ -250,7 +260,7 @@ def get_agents():
     return ct.to_json(orient='records')
     print(len(ct.loc[ct['d']==193]))
 
-@app.route('/choiceModels/v1.0/geo', methods=['GET'])
+@app.route('/choiceModels/volpe/v1.0/geo', methods=['GET'])
 def get_geo():
     #return the subsetted geojson data
     return jsonify(geoIdGeo_subset)
