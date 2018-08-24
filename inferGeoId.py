@@ -211,7 +211,7 @@ indivWorkWide['mode-1']=indivWorkWide.apply(lambda row: int(row['mode'])-1, axis
 #indivWorkWide['workPOWPUMA']=indivWorkWide.apply(lambda row: int(row['workPOWPUMA']), axis=1)
 #
 indivWorkWide['simpleMode']=indivWorkWide.apply(lambda row: simpleMode(row['mode']), axis=1)
-indivWorkWide['incomeQ']=indivWorkWide.apply(lambda row: getIncomeBand(row), axis=1)
+indivWorkWide['incomeQ']=indivWorkWide.apply(lambda row: getIncomeBand(row), axis=1).astype(int)
 indivWorkWide['ageQ']=indivWorkWide.apply(lambda row: getAgeBand(row), axis=1)
 indivWorkWide['ageQ3'], ageBins=pd.qcut(indivWorkWide['age'], 3, labels=range(3), retbins=True)  
 indivWorkWide['incomeQ3'], incomeBins=pd.qcut(indivWorkWide['incomePersonal'], 3, labels=range(3), retbins=True)  
@@ -221,7 +221,10 @@ indivWorkWide=indivWorkWide.loc[indivWorkWide['incomeQ'].notnull()]
 ############################ Build the CPDs for the Naive Bayes Classifier #######################################
 # 
 totalHHsbyGeo=[hhIncome.loc[int(revGeoidDict[j])][2]for j in revGeoidDict]
-probIncomeGivenGeo=np.array([[hhIncome.loc[int(revGeoidDict[i])][list(incomeColumnDict.items())[j][1]]/totalHHsbyGeo[i] for j in range(len(incomeColumnDict))] for i in revGeoidDict])
+probIncomeGivenGeoList=[]
+for i in revGeoidDict:
+    probIncomeGivenGeoList.append([hhIncome.loc[int(revGeoidDict[i])][list(incomeColumnDict.items())[j][1]]/totalHHsbyGeo[i] for j in range(len(incomeColumnDict))])
+probIncomeGivenGeo=np.array(probIncomeGivenGeoList)
 totalHHsbyIncomeBand=np.array([sum([hhIncome.loc[int(revGeoidDict[i])][list(incomeColumnDict.items())[j][1]] for i in revGeoidDict]) for j in range(len(incomeColumnDict))])
 incomePrior=totalHHsbyIncomeBand/sum(totalHHsbyIncomeBand)
 
@@ -307,10 +310,11 @@ for i in range(len(indivWorkWideOut)):
     try:
         workDrawInd = choice([g for g in revGeoidDict], 1, p=postProbWorkGeo)[0]
         workDraw=revGeoidDict[workDrawInd]
-        indivWorkWideOut.set_value(i, 'workGEOID', workDraw)
+        indivWorkWideOut.at[i, 'workGEOID']= workDraw
     except:
         pass
     #postProbWorkGeo=get row of mode OD matrix corresponding to the selected home geoId
-    indivWorkWideOut.set_value(i, 'homeGEOID', homeDraw) 
+#    indivWorkWideOut.set_value(i, 'homeGEOID', homeDraw) 
+    indivWorkWideOut.at[i, 'homeGEOID']= homeDraw
      
 pickle.dump(indivWorkWideOut, open('./results/population.p', 'wb'))  

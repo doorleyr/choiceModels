@@ -64,15 +64,16 @@ simPop['cost_drive']= simPop.apply(lambda row: (row['dist_drive']/1000)*perKmCar
 simPop['cost_PT']=costPT
 simPop['cost_walk']=0
 simPop['cost_cycle']=annualBicycleCost/(daysPerYear*2)
-simPop['PT_Avail']= simPop.apply(lambda row: not np.isnan(row['transitTime_PT']), axis=1)
+#simPop['PT_Avail']= simPop.apply(lambda row: not np.isnan(row['transitTime_PT']), axis=1)
 
 for i in range(len(simPop)):
     if np.isnan(simPop.iloc[i]['transitTime_PT']):
-        simPop.set_value(i,'transitTime_PT', 1e10 )
-        simPop.set_value(i,'walkTime_PT', 1e10 )
+        simPop.at[i,'transitTime_PT'] =max(simPop['transitTime_PT']) 
+        simPop.at[i,'walkTime_PT'] =max(simPop['walkTime_PT'])
+        simPop.at[i,'waitTime_PT'] =max(simPop['waitTime_PT'])
         
-# Delete small num of observations where transit directions not found but observed person takes PT
-simPop=simPop.loc[simPop['PT_Avail'] | ~(simPop['simpleMode']==3)].reset_index(drop=True)
+## Delete small num of observations where transit directions not found but observed person takes PT
+#simPop=simPop.loc[simPop['PT_Avail'] | ~(simPop['simpleMode']==3)].reset_index(drop=True)
 
 #interact cost with income
 for m in ['drive', 'PT', 'walk', 'cycle']:
@@ -81,13 +82,14 @@ for m in ['drive', 'PT', 'walk', 'cycle']:
 simPop=simPop.sort_values(by='simpleMode').reset_index(drop=True)
 
 ##################### Create Long Dataframe for max likelihood estimation ############################
-ind_variables = ['ageQ_0', 'ageQ_1','ageQ_2', 'accessibleEmployment', 'housingDensity', 'employmentDensity', 'homeGEOID', 'workGEOID', 'incomeQ3', 'ageQ3']
+ind_variables = ['ageQ_0', 'ageQ_1','ageQ_2', 'accessibleEmployment', 'housingDensity', 'employmentDensity', 'homeGEOID', 'workGEOID', 'incomeQ3', 'ageQ3', 'incomePersonal']
 # Specify the variables that vary across individuals and some or all alternatives
 
 # Specify the availability variables
 simPop['carAvail']=1
 simPop['cycleAvail']=1
 simPop['walkAvail']=1
+simPop['PT_Avail']=1
 
 availability_variables = {0:'carAvail',
                           1:'cycleAvail',

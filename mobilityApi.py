@@ -71,9 +71,11 @@ topEdge_lonLat={'lat':42.367255,   'lon':  -71.083231}# Kendall Volpe area
 # load the precalibrated models and data
 geoIdAttributes=pickle.load( open( "./results/geoidAttributes.p", "rb" ) )
 geoIdGeo_subset=pickle.load( open( "./results/tractsMassSubset.p", "rb" ) )
-#simPop_mnl=pickle.load( open('./results/simPop_mnl.p', 'rb'))
-simPop_mnl=pd.read_pickle('./results/simPop_mnl.p')
-longSimPop=pd.read_pickle('./results/longSimPop.p')
+simPop_mnl=pickle.load( open('./results/simPop_mnl.p', 'rb'))
+longSimPop=pickle.load( open('./results/longSimPop.p', 'rb'))
+#simPop_mnl=pd.read_pickle('./results/simPop_mnl.p')
+#longSimPop=pd.read_pickle('./results/longSimPop.p')
+print(len(longSimPop)/4)
 
 #add centroids
 for f in geoIdGeo_subset['features']:
@@ -163,7 +165,7 @@ def create_app():
                     if sampleWorkerIncrease>0:
 #                        print('O increased')
                         candidates=set(longSimPop[longSimPop['d']==iz]['custom_id'].values)
-                        newPeople=pd.DataFrame(columns=longSimPop.columns)
+                        newPeople=pd.DataFrame()
                         for i in range(sampleWorkerIncrease):
                             newPeople=newPeople.append(longSimPop[longSimPop['custom_id']==random.sample(candidates,1)])
                         newPeople['custom_id']=[longSimPop.iloc[len(longSimPop)-1]['custom_id']+1+i for i in range(sampleWorkerIncrease) for j in range(4)]
@@ -207,7 +209,8 @@ def create_app():
                     for lu in LU_types:
                         lu_changes[iz][lu+'_last']=lu_changes[iz][lu]
                 longSimPop['P']=simPop_mnl.predict(longSimPop)
-#                print('BG thread took: '+str(((datetime.datetime.now()-startBg).microseconds)/1e6)+' seconds')
+                print(len(longSimPop)/4)
+                print('BG thread took: '+str(((datetime.datetime.now()-startBg).microseconds)/1e6)+' seconds')
         yourThread = threading.Timer(POOL_TIME, background, args=())
         yourThread.start()        
 

@@ -54,7 +54,7 @@ for geoId in geoIdAttributes:
         try:
             totalWorkers=workersByWorkPlace.loc[geoIdName]['Workers 16 and Over']
         except:
-            print(geoIdName+'Area not in commuting data')
+            print(geoIdName+' Area not in commuting data')
             totalWorkers=0
         props=geoIdGeo['features'][ind]['properties']
         geoidShape=shape(geoIdGeo['features'][ind]['geometry']) #get rectangular bounds as they are needed for OSM
@@ -75,6 +75,7 @@ for geoId in geoIdAttributes:
 # to cut down on requests to the directions API, check the straight line distance first
 maxStraightLineDist=0.3*4800
 for geoId in geoIdList: 
+    print(geoId)
     ind=geoidOrderGeojson.index(geoId)
     geoIdAttributes[geoId]['accessibleGeoids']=[]
     geoIdAttributes[geoId]['accessibleEmployment']=geoIdAttributes[geoId]['employment']
