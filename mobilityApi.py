@@ -187,7 +187,7 @@ def create_app():
                             mask=longSimPop['custom_id']==mover
                             # TODO income normalisation of cost
                             for col in ['accessibleEmployment', 'housingDensity', 'homeGEOID', 'cycle_time','cost_by_personalIncome', 'vehicle_time', 'wait_time', 'walk_time', 'o']:
-                                longSimPop.loc[mask, col]=candidateDf[col] .values                       
+                                longSimPop.loc[mask, col]=candidateDf[col].values                       
                     elif sampleHousingIncrease<0:
 #                        print('R decreased')
                         #find list of possible movers that live in iz
