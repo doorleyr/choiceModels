@@ -139,7 +139,7 @@ def create_app():
                 except:
                     print("Couldn't get cityIO updates")
             if cityIO_data['meta']['id']==lastId:
-                print('no change')
+                pass
             else:
                 print('change')
                 lastId=cityIO_data['meta']['id']
@@ -261,7 +261,7 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    app.run(port=3030, debug=False, use_reloader=False)
+    app.run(port=3030, debug=False, use_reloader=False, threaded=True)
     # if reloader is Trye, it starts the background thread twice
     
 #test=[ct.loc[ct['o']==o].to_json(orient='records') for o in range(417)]    
